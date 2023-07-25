@@ -71,6 +71,7 @@ class TestRunner(Base):
         # Process the result
         stdout_clean = re.sub(r"\x1B\[\d?\;?\d+m", "", stdout)
         check_fail = False
+        bug = None
         failed_tc = []
 
         # verdict result
@@ -79,11 +80,17 @@ class TestRunner(Base):
                 self.test_summary = line
 
                 result = self.parse_result(line)
-                if result["failed"] != "0":
+                if result["failed"] != "0" or bug:
                     self.log_dbg("Some test failed")
+
+                    if bug:
+                        desc = f"{self.name}: {bug}"
+                    else:
+                        desc = f"{self.name}: {line}"
+
                     submit_pw_check(self.ci_data.pw, self.ci_data.patch_1,
                                     self.name, Verdict.FAIL,
-                                    f"{self.name}: {line}",
+                                    desc,
                                     None, self.ci_data.config['dry_run'])
                     self.add_failure(line)
 
@@ -103,6 +110,10 @@ class TestRunner(Base):
                                 None, self.ci_data.config['dry_run'])
                 self.success()
                 return
+
+            if re.search(r"^(BUG:|WARNING:|general protection fault|Kernel panic)", line):
+                bug = line
+                self.add_failure(line)
 
             if re.search(r"^Test Summary", line):
                 self.log_dbg("Start to check fail in the line")
