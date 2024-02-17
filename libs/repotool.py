@@ -86,3 +86,7 @@ class RepoTool:
 
         return self.git(cmd)
 
+    def git_clean(self):
+        # Recursively remove all untracked files, not limited to gitignore
+        return self.git(["clean", "-d", "--force", "-x"])
+

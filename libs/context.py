@@ -24,7 +24,6 @@ class Context():
 
         # Init patchwork
         log_info("Initialize patchwork")
-        self.pw = None
         try:
             self.pw = Patchwork(self.config['patchwork']['url'],
                                 self.config['patchwork']['project_name'])
@@ -47,7 +46,6 @@ class Context():
             log_error("Set GITHUB_TOKEN environment variable")
             raise ContextError
 
-        self.gh = None
         try:
             self.gh = GithubTool(github_repo, os.environ['GITHUB_TOKEN'])
         except:
@@ -65,13 +63,13 @@ class Context():
 
         # Init src_dir
         log_info(f"Initialize Source directory: {src_dir}")
-        self.src_repo = None
         try:
             self.src_repo = RepoTool(os.path.basename(src_dir), src_dir)
         except:
             log_error("Failed to initialize RepoTool class")
             raise ContextError
         self.src_dir = self.src_repo.path()
+        self.patch_root = patch_root
 
         # Custome confguration
         for kw in kwargs:

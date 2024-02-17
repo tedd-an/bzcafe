@@ -432,6 +432,7 @@ def main():
     ci_data = Context(config_file=os.path.abspath(args.config),
                       github_repo=args.repo,
                       src_dir=args.src_dir,
+                      patch_dir='', # XXX: convert script to use over temp_root
                       branch=args.branch,
                       space=args.space,
                       dry_run=args.dry_run,

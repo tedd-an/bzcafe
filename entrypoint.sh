@@ -149,16 +149,20 @@ case $TASK in
             clone_ell $GITHUB_WORKSPACE/$BASE_DIR/ell
             set_git_safe_dir $GITHUB_WORKSPACE/$BASE_DIR/ell
 
+            mkdir $GITHUB_WORKSPACE/$BASE_DIR/patch
+
             if [ $SPACE == "kernel" ]; then
                 clone_bluez $GITHUB_WORKSPACE/$BASE_DIR/bluez
                 set_git_safe_dir $GITHUB_WORKSPACE/$BASE_DIR/bluez
                 /ci.py -c /config.json -z $GITHUB_WORKSPACE/$BASE_DIR/bluez    \
                                        -e $GITHUB_WORKSPACE/$BASE_DIR/ell      \
                                        -k $GITHUB_WORKSPACE/$BASE_DIR/src      \
+                                       -p $GITHUB_WORKSPACE/$BASE_DIR/patch    \
                                        kernel $GITHUB_REPOSITORY $PR
             elif [ $SPACE == "user" ]; then
                 /ci.py -c /config.json -z $GITHUB_WORKSPACE/$BASE_DIR/src      \
                                        -e $GITHUB_WORKSPACE/$BASE_DIR/ell      \
+                                       -p $GITHUB_WORKSPACE/$BASE_DIR/patch    \
                                        user $GITHUB_REPOSITORY $PR
             else
                 echo "Unknown SPACE: $SPACE"

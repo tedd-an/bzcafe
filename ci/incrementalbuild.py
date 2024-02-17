@@ -58,16 +58,20 @@ class IncrementalBuild(Base):
 
             # Save patch mbox to file
             patch_file = self.ci_data.pw.save_patch_mbox(patch['id'],
-                            os.path.join(self.ci_data.src_dir,
+                            os.path.join(self.ci_data.patch_dir,
                                          f"{patch['id']}.patch"))
             self.log_dbg(f"Save patch: {patch_file}")
 
             # Apply patch
             if self.ci_data.src_repo.git_am(patch_file):
                 self.log_err("Failed to apply patch")
-                msg = self.ci_data.src_repo.stderr
-                self.ci_data.src_repo.git_am(abort=True)
-                self.add_failure_end_test(msg)
+                self.log_info("Cleaning git tree and retrying")
+                self.ci_data.src_repo.git_clean()
+                if self.ci_data.src_repo.git_am(patch_file):
+                    self.log_err("Failed to apply patch. Giving up")
+                    msg = self.ci_data.src_repo.stderr
+                    self.ci_data.src_repo.git_am(abort=True)
+                    self.add_failure_end_test(msg)
 
             # Test Build
             try:

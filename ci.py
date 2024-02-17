@@ -33,6 +33,10 @@ def check_args(args):
             log_error(f"Invalid parameter(kernel_dir) {args.kernel_dir}")
             return False
 
+    if not os.path.exists(os.path.abspath(args.patch_root)):
+        log_error(f"Invalid parameter(patch_root) {args.patch_root}")
+        return False
+
     return True
 
 def parse_args():
@@ -48,6 +52,8 @@ def parse_args():
                     help='ELL source directory.')
     ap.add_argument('-k', '--kernel-dir', default=None,
                     help='Kernel source directory')
+    ap.add_argument('-p', '--patch-root', required=True,
+                    help='Ratch root directory.')
     ap.add_argument('-d', '--dry-run', action='store_true', default=False,
                     help='Run it without uploading the result. default=False')
 
@@ -339,6 +345,7 @@ def main():
     ci_data = Context(config_file=os.path.abspath(args.config),
                       github_repo=args.repo,
                       src_dir=main_src,
+                      patch_root=args.patch_root,
                       branch=args.branch, dry_run=args.dry_run,
                       bluez_dir=args.bluez_dir, ell_dir=args.ell_dir,
                       kernel_dir=args.kernel_dir, pr_num=args.pr_num,
