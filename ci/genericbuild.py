@@ -58,7 +58,7 @@ class GenericBuild(Base):
 
         # Make
         # AR: Maybe read from /proc for job count
-        cmd = [self.make_cmd, "-j2"]
+        cmd = [self.make_cmd, "-j4"]
         if self.use_fakeroot:
             cmd = ["fakeroot"] + cmd
         if self.make_params:

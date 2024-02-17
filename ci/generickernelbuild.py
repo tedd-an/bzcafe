@@ -58,7 +58,7 @@ class GenericKernelBuild(Base):
         # make
         self.log_info("Run make")
 
-        base_cmd = ["make", "-j2"]
+        base_cmd = ["make", "-j4"]
         if self.make_params:
             base_cmd += self.make_params
         self.log_dbg(f"GenericKernelBuild: Base Command: {base_cmd}")

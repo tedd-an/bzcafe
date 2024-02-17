@@ -40,7 +40,7 @@ class ScanBuild(Base):
             self.add_failure_end_test(stderr)
 
         # Scan Build Make
-        cmd = ["scan-build", "make", "-j2"]
+        cmd = ["scan-build", "make", "-j4"]
         (ret, stdout, stderr) = cmd_run(cmd, cwd=self.ci_data.src_dir)
         if ret:
             self.log_err("Scan Build failed")
